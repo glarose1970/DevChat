@@ -12,19 +12,23 @@ public class User {
     private String Status;
     private String chatStatus;
     private String userID;
+    private String main_img_url;
+    private String thumb_img_url;
+
 
 
     public User() {
     }
 
-
-    public User(String username, String gender, String rank, String status, String chatStatus, String userID) {
+    public User(String username, String gender, String rank, String status, String chatStatus, String userID, String main_img_url, String thumb_img_url) {
         Username = username;
         Gender = gender;
         Rank = rank;
         Status = status;
         this.chatStatus = chatStatus;
         this.userID = userID;
+        this.main_img_url = main_img_url;
+        this.thumb_img_url = thumb_img_url;
     }
 
     public String getUsername() {
@@ -73,5 +77,21 @@ public class User {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public String getMain_img_url() {
+        return main_img_url;
+    }
+
+    public void setMain_img_url(String main_img_url) {
+        this.main_img_url = main_img_url;
+    }
+
+    public String getThumb_img_url() {
+        return thumb_img_url;
+    }
+
+    public void setThumb_img_url(String thumb_img_url) {
+        this.thumb_img_url = thumb_img_url;
     }
 }

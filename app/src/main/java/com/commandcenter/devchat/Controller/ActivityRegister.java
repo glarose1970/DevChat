@@ -103,7 +103,7 @@ public class ActivityRegister extends AppCompatActivity {
         }else {
             FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
             String userID = current_user.getUid();
-            User user = new User(et_username.getText().toString(), et_gender.getText().toString(), "Newbie", "Online", "Active", userID);
+            User user = new User(et_username.getText().toString(), et_gender.getText().toString(), "Newbie", "Online", "Active", userID, "", "");
             mRef.child(mAuth.getCurrentUser().getUid()).setValue(user);
         }
     }

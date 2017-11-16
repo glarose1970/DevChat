@@ -3,6 +3,7 @@
     package="com.commandcenter.devchat">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -37,7 +38,8 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Controller.UsersList" />
-        <activity android:name=".Controller.User_Profile"></activity>
+        <activity android:name=".Controller.User_Profile" />
+        <activity android:name=".Main_Settings_Profile"></activity>
     </application>
 
 </manifest>

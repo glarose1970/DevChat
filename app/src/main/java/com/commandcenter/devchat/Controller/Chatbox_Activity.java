@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.commandcenter.devchat.Adapter.FirebaseMessageAdapter;
 import com.commandcenter.devchat.Helper.EmailHelper;
+import com.commandcenter.devchat.Main_Settings_Profile;
 import com.commandcenter.devchat.Model.ChatboxMessage;
 import com.commandcenter.devchat.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -177,6 +178,10 @@ public class Chatbox_Activity extends AppCompatActivity {
                 case R.id.navUsers:
                     Intent userIntent = new Intent(Chatbox_Activity.this, UsersList.class);
                     startActivity(userIntent);
+                    return true;
+                case R.id.settings:
+                    Intent settingsIntent = new Intent(Chatbox_Activity.this, Main_Settings_Profile.class);
+                    startActivity(settingsIntent);
                     return true;
                 default:
                     return super.onOptionsItemSelected(item);
