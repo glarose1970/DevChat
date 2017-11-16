@@ -1,4 +1,4 @@
-package com.commandcenter.devchat;
+package com.commandcenter.devchat.Controller;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,9 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.commandcenter.devchat.Controller.Chatbox_Activity;
-import com.commandcenter.devchat.Controller.MainActivity;
-import com.commandcenter.devchat.Controller.UsersList;
+import com.commandcenter.devchat.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;

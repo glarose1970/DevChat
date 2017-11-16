@@ -39,7 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Controller.UsersList" />
         <activity android:name=".Controller.User_Profile" />
-        <activity android:name=".Main_Settings_Profile"></activity>
+        <activity android:name=".Controller.Main_Settings_Profile"></activity>
     </application>
 
 </manifest>

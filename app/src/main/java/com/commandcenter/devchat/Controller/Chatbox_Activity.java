@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.commandcenter.devchat.Adapter.FirebaseMessageAdapter;
 import com.commandcenter.devchat.Helper.EmailHelper;
-import com.commandcenter.devchat.Main_Settings_Profile;
 import com.commandcenter.devchat.Model.ChatboxMessage;
 import com.commandcenter.devchat.R;
 import com.google.firebase.auth.FirebaseAuth;

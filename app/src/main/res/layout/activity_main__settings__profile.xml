@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.commandcenter.devchat.Main_Settings_Profile"
+    tools:context="com.commandcenter.devchat.Controller.Main_Settings_Profile"
     android:background="@drawable/layout_background"
     android:layout_gravity="center_horizontal">
 
