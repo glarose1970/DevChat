@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -124,6 +126,46 @@ public class Chatbox_Activity extends AppCompatActivity {
 
                 }
             });
+
+            mIncomingMsg.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String isTyping = dataSnapshot.getValue().toString();
+                    if (isTyping.equalsIgnoreCase("True")) {
+                        incoming_msg.setText("SomeOne is Typing...");
+                    }else {
+                        incoming_msg.setText("");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            et_message.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                   // mIncomingMsg.setValue("True");
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!TextUtils.isEmpty(et_message.getText().toString())) {
+                        mIncomingMsg.setValue("True");
+                        incoming_msg.setText("Someone is typing...");
+                    }else {
+                        mIncomingMsg.setValue("False");
+                        incoming_msg.setText("");
+                    }
+
+                }
+            });
         }else {
             Intent intent = new Intent(Chatbox_Activity.this, MainActivity.class);
             startActivity(intent);
@@ -134,14 +176,14 @@ public class Chatbox_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (TextUtils.isEmpty(et_message.getText().toString())) {
+                if (TextUtils.isEmpty(et_message.getText().toString()) || et_message.getText().toString().trim().equalsIgnoreCase("")) {
                     Toast.makeText(Chatbox_Activity.this, "Please enter a message to send!", Toast.LENGTH_SHORT).show();
                 }else {
                     SimpleDateFormat dFormat = new SimpleDateFormat("hh:mm:ss a");
                     dFormat.setTimeZone(TimeZone.getDefault());
                     time = dFormat.format(new Date()).toString();
 
-                        ChatboxMessage message = new ChatboxMessage(user, et_message.getText().toString(), rank,  curDate, time);
+                        ChatboxMessage message = new ChatboxMessage(user, et_message.getText().toString().trim(), rank,  curDate, time);
                         getStatus(user);
                         processMessage(message, chatStatus);
 
@@ -206,7 +248,7 @@ public class Chatbox_Activity extends AppCompatActivity {
         mNewMessageRef = mDatabase.getReference("messages").child(curDate);
         mUsers = mDatabase.getReference("users").child(mAuth.getCurrentUser().getUid());
         mAllUsers = mDatabase.getReference("users");
-
+        mIncomingMsg = mDatabase.getReference("Typing");
         messageRecView = (RecyclerView) findViewById(R.id.chatbox_recView);
         et_message = (EditText) findViewById(R.id.chatbox_et_message);
         incoming_msg = (TextView) findViewById(R.id.chatbox_incoming);

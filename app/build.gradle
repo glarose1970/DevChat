@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     defaultConfig {
         applicationId "com.commandcenter.devchat"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -48,7 +48,14 @@ dependencies {
     //PICASSO
     compile 'com.squareup.picasso:picasso:2.5.2'
 
+    //Circle ImageView
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+    //Image Crop
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+
 }
 
 
+
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'

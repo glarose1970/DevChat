@@ -2,7 +2,9 @@ package com.commandcenter.devchat.Controller;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,9 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commandcenter.devchat.R;
+import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,15 +33,21 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
 
 public class Main_Settings_Profile extends AppCompatActivity {
 
     private DatabaseReference mUsers;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
+    private FirebaseUser curUser;
 
     private StorageReference mStorage;
-    private static final int GALLERY_INTENT = 2;
+    private static final int GALLERY_PICK = 1;
 
     Button btn_Edit;
     TextView tv_displayName, tv_Rank, tv_Friends, tv_status;
@@ -48,7 +60,6 @@ public class Main_Settings_Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__settings__profile);
 
-        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mUsers = mDatabase.getReference("users");
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -63,13 +74,17 @@ public class Main_Settings_Profile extends AppCompatActivity {
         btn_Edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, GALLERY_INTENT);
+                try {
+                   Intent galleryIntent = new Intent();
+                   galleryIntent.setType("image/*");
+                   galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                   startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+                }catch (Exception e) {
+                    Toast.makeText(Main_Settings_Profile.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
-
-        setUserInfo();
 
     }
 
@@ -117,29 +132,92 @@ public class Main_Settings_Profile extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK) {
+        int newHeight = 256;
+        int newWidth = 256;
 
-            mUploadProgress = new ProgressDialog(this);
-            mUploadProgress.setTitle("Uploading Image");
-            mUploadProgress.setMessage("Please wait while DevChat Uploads your profile image...");
-            mUploadProgress.setCanceledOnTouchOutside(false);
-            mUploadProgress.show();
-            Uri uri = data.getData();
-            iv_profile_image.setImageURI(uri);
-            StorageReference profileImagePath = mStorage.child("ProfileImages").child(mAuth.getCurrentUser().getUid()).child("main_profile");
+           if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
 
-            profileImagePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mUploadProgress.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+               Uri uri = data.getData();
 
-                }
-            });
+               try {
+                   Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                   bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+                   ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                   bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+                   byte[] imgData = baos.toByteArray();
+
+                   mUploadProgress = new ProgressDialog(this);
+                   mUploadProgress.setTitle("Uploading Image");
+                   mUploadProgress.setMessage("Please wait while DevChat Uploads your profile image...");
+                   mUploadProgress.setCanceledOnTouchOutside(false);
+                   mUploadProgress.show();
+
+                   iv_profile_image.setImageURI(uri);
+
+                   StorageReference imgPath = mStorage.child("ProfileImages").child(mAuth.getCurrentUser().getUid()).child("profile_img.jpg");
+
+                   imgPath.putBytes(imgData).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                       @Override
+                       public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                           if (task.isSuccessful()) {
+
+                               String downloadUrl = task.getResult().getDownloadUrl().toString();
+
+                               if (curUser == null) {
+                                   mAuth = FirebaseAuth.getInstance();
+                                   curUser = mAuth.getCurrentUser();
+                                   mUsers.child(curUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                       @Override
+                                       public void onComplete(@NonNull Task<Void> task) {
+                                           if (task.isSuccessful()) {
+                                               mUploadProgress.dismiss();
+                                               Toast.makeText(Main_Settings_Profile.this, "Image Upload Success!!", Toast.LENGTH_SHORT).show();
+                                           }
+
+                                       }
+                                   });
+
+                               }else {
+                                   mUsers.child(curUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                       @Override
+                                       public void onComplete(@NonNull Task<Void> task) {
+                                           if (task.isSuccessful()) {
+                                               mUploadProgress.dismiss();
+                                               Toast.makeText(Main_Settings_Profile.this, "Image Upload Success!!", Toast.LENGTH_SHORT).show();
+                                           }
+
+                                       }
+                                   });
+
+                               }
+
+                           }else {
+                               mUploadProgress.dismiss();
+                               Toast.makeText(Main_Settings_Profile.this, "Image Upload Failed!!", Toast.LENGTH_SHORT).show();
+                           }
+                       }
+                   });
+               }catch (Exception e) {
+                   Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+               }
+
+
+           }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+            curUser = mAuth.getCurrentUser();
+            setUserInfo();
+        }else {
+            curUser = mAuth.getCurrentUser();
+            setUserInfo();
         }
+
     }
 
     private void setUserInfo() {
@@ -149,6 +227,11 @@ public class Main_Settings_Profile extends AppCompatActivity {
                 String name = dataSnapshot.child("username").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
                 String rank = dataSnapshot.child("rank").getValue().toString();
+                String mainImg = dataSnapshot.child("main_img_url").getValue().toString();
+
+                if (mainImg != "default_url") {
+                    Picasso.with(Main_Settings_Profile.this).load(mainImg).placeholder(R.drawable.ic_person).into(iv_profile_image);
+                }
 
                 tv_displayName.setText(name);
                 tv_Rank.setText(rank);
@@ -160,5 +243,8 @@ public class Main_Settings_Profile extends AppCompatActivity {
 
             }
         });
+
+        //Uri img_uri = mStorage.child(mAuth.getCurrentUser().getUid()).child("main_profile").getDownloadUrl().getResult();
+       // iv_profile_image.setImageURI(img_uri);
     }
 }
