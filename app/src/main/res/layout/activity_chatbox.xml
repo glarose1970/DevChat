@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,17 +31,19 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
+
             <EditText
                 android:id="@+id/chatbox_et_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Write your message here"
+                android:hint="Write Message Here..."
                 android:textSize="14sp" />
+
 
             <Button
                 android:id="@+id/chatbox_btnSend"
-                android:layout_width="69dp"
+                android:layout_width="54dp"
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/ic_menu_send" />
 

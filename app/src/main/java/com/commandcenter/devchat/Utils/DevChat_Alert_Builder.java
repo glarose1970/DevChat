@@ -10,20 +10,18 @@ import android.widget.EditText;
  * Created by Command Center on 11/17/2017.
  */
 
-public class DevChat_Alert_Builder extends AlertDialog{
+public class DevChat_Alert_Builder {
 
     private String Title;
     private String Message;
     private Context context;
 
-
-
-    public DevChat_Alert_Builder(Context context) {
-        super(context);
+    public DevChat_Alert_Builder(String title,  Context context) {
+        Title = title;
         this.context = context;
     }
 
-    public void showAlert(String title, String message) {
+    public void showAlert(String title) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
 

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DevChat.iml" filepath="$PROJECT_DIR$/.idea/DevChat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DevChat.iml" filepath="$PROJECT_DIR$/DevChat.iml" />
       <module fileurl="file://C:\Users\jason\Downloads\DevChat-Gene\DevChat\DevChat.iml" filepath="C:\Users\jason\Downloads\DevChat-Gene\DevChat\DevChat.iml" />
+      <module fileurl="file://C:\Users\AndroidStudio\Projects\DevChat\.idea\DevChat.iml" filepath="C:\Users\AndroidStudio\Projects\DevChat\.idea\DevChat.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

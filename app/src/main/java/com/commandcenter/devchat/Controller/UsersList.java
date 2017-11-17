@@ -1,5 +1,7 @@
 package com.commandcenter.devchat.Controller;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 public class UsersList extends AppCompatActivity {
 
@@ -66,6 +69,7 @@ public class UsersList extends AppCompatActivity {
                         viewHolder.setName(users.getUsername());
                         viewHolder.setRank(users.getRank());
                         viewHolder.setStatus(users.getStatus());
+                        viewHolder.setProfileImg(users.getMain_img_url());
 
                         final String user_id = getRef(position).getKey();
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -136,9 +140,10 @@ public class UsersList extends AppCompatActivity {
     public static class UsersViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
+        final Context context;
         public UsersViewHolder(View itemView) {
             super(itemView);
-
+            context = itemView.getContext();
             mView = itemView;
         }
 
@@ -162,6 +167,11 @@ public class UsersList extends AppCompatActivity {
         public void setRank(String rank) {
             TextView tv_rank = (TextView) mView.findViewById(R.id.single_user_tv_Rank);
             tv_rank.setText(rank);
+        }
+
+        public void setProfileImg(String imgUrl) {
+            de.hdodenhof.circleimageview.CircleImageView iv_profile = (de.hdodenhof.circleimageview.CircleImageView) mView.findViewById(R.id.single_user_iv_profileImg);
+            Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_person).into(iv_profile);
         }
 
     }

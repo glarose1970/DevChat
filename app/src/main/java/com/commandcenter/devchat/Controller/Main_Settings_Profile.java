@@ -90,8 +90,8 @@ public class Main_Settings_Profile extends AppCompatActivity {
         btn_setName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DevChat_Alert_Builder alert = new DevChat_Alert_Builder(Main_Settings_Profile.this);
-                alert.showAlert("EDIT DISPLAY NAME", "use this dialog to edit your display name");
+                DevChat_Alert_Builder alert = new DevChat_Alert_Builder("EDIT DISPLAY NAME",Main_Settings_Profile.this);
+                alert.showAlert("EDIT DISPLAY NAME");
                 tv_displayName.setText(alert.getMessage());
             }
         });
@@ -181,7 +181,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
                                        public void onComplete(@NonNull Task<Void> task) {
                                            if (task.isSuccessful()) {
                                                mUploadProgress.dismiss();
-                                               Toast.makeText(Main_Settings_Profile.this, "Image Upload Success!!", Toast.LENGTH_SHORT).show();
+                                               Toast.makeText(Main_Settings_Profile.this, "Image Upload Success\r\nChanges will take place on next restart!!", Toast.LENGTH_SHORT).show();
                                            }
 
                                        }
