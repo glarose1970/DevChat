@@ -1,6 +1,7 @@
 package com.commandcenter.devchat.Controller;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,8 +64,8 @@ public class UsersList extends AppCompatActivity {
 
                     if (!userUID.equalsIgnoreCase(users.getUserID())) {
                         viewHolder.setName(users.getUsername());
+                        viewHolder.setRank(users.getRank());
                         viewHolder.setStatus(users.getStatus());
-                        viewHolder.setGender(users.getGender());
 
                         final String user_id = getRef(position).getKey();
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -148,12 +149,19 @@ public class UsersList extends AppCompatActivity {
 
         public void setStatus(String status) {
             TextView tv_userStatus = (TextView) mView.findViewById(R.id.single_user_tv_Status);
-            tv_userStatus.setText(status);
+            if (status.equalsIgnoreCase("Online")) {
+                tv_userStatus.setTextColor(Color.GREEN);
+                tv_userStatus.setText(status);
+            }else {
+                tv_userStatus.setTextColor(Color.RED);
+                tv_userStatus.setText(status);
+            }
+
         }
 
-        public void setGender(String gender) {
-            TextView tv_userGender = (TextView) mView.findViewById(R.id.single_user_tv_Gender);
-            tv_userGender.setText(gender);
+        public void setRank(String rank) {
+            TextView tv_rank = (TextView) mView.findViewById(R.id.single_user_tv_Rank);
+            tv_rank.setText(rank);
         }
 
     }

@@ -16,4 +16,8 @@
     <string name="navfriends">Friends</string>
     <string name="gender">Gender</string>
     <string name="navUsers">All Users</string>
+    <string name="send_friend_request">Send Friend Request</string>
+    <string name="status">Status</string>
+    <string name="rank">Rank</string>
+    <string name="display_name">Display Name</string>
 </resources>
