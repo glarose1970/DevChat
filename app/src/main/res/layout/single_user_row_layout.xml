@@ -35,14 +35,15 @@
                 android:layout_height="wrap_content"
                 android:hint="Display Name :"
                 android:textStyle="bold"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 />
 
             <TextView
                 android:id="@+id/single_user_tv_Rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Rank"/>
+                android:hint="Rank"
+                android:textStyle="italic"/>
 
             <TextView
                 android:id="@+id/single_user_tv_Status"

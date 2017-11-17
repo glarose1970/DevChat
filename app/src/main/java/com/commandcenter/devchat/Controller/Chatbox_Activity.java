@@ -70,6 +70,7 @@ public class Chatbox_Activity extends AppCompatActivity {
     private String rank;
     private String status;
     private String chatStatus;
+    private String chatAvatar;
 
     private String curDate;
     private String time;
@@ -118,6 +119,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                     rank = dataSnapshot.child("rank").getValue().toString();
                     status = dataSnapshot.child("status").getValue().toString();
                     chatStatus = dataSnapshot.child("chatStatus").getValue().toString();
+                    chatAvatar = dataSnapshot.child("main_img_url").getValue().toString();
                     welcomeUser(user);
                 }
 
@@ -183,7 +185,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                     dFormat.setTimeZone(TimeZone.getDefault());
                     time = dFormat.format(new Date()).toString();
 
-                        ChatboxMessage message = new ChatboxMessage(user, et_message.getText().toString().trim(), rank,  curDate, time);
+                        ChatboxMessage message = new ChatboxMessage(user, et_message.getText().toString().trim(), rank,  curDate, time, chatAvatar);
                         getStatus(user);
                         processMessage(message, chatStatus);
 
@@ -309,7 +311,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                                         SimpleDateFormat dFormat = new SimpleDateFormat("hh:mm:ss a");
                                         dFormat.setTimeZone(TimeZone.getDefault());
                                         String curtime = dFormat.format(new Date()).toString();
-                                        ChatboxMessage banMessage = new ChatboxMessage(curUser, messageDetails[1] + " has been Banned by Admin", curRank, curDate, curtime);
+                                        ChatboxMessage banMessage = new ChatboxMessage(curUser, messageDetails[1] + " has been Banned by Admin", curRank, curDate, curtime, chatAvatar);
                                         mNewMessageRef.push().setValue(banMessage);
                                         break;
                                     case "~kick":
@@ -317,7 +319,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                                         dFormat = new SimpleDateFormat("hh:mm:ss a");
                                         dFormat.setTimeZone(TimeZone.getDefault());
                                         curtime = dFormat.format(new Date()).toString();
-                                        banMessage = new ChatboxMessage(curUser, curUser + " has been Kicked by Admin", curRank, curDate, curtime);
+                                        banMessage = new ChatboxMessage(curUser, curUser + " has been Kicked by Admin", curRank, curDate, curtime, chatAvatar);
                                         mNewMessageRef.push().setValue(banMessage);
                                         break;
                                     case "~silence":
@@ -325,7 +327,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                                         dFormat = new SimpleDateFormat("hh:mm:ss a");
                                         dFormat.setTimeZone(TimeZone.getDefault());
                                         curtime = dFormat.format(new Date()).toString();
-                                        banMessage = new ChatboxMessage(curUser, curUser + " has been Silenced by Admin", curRank, curDate, curtime);
+                                        banMessage = new ChatboxMessage(curUser, curUser + " has been Silenced by Admin", curRank, curDate, curtime, chatAvatar);
                                         mNewMessageRef.push().setValue(banMessage);
                                         break;
                                     case "~warn":
@@ -333,7 +335,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                                         dFormat = new SimpleDateFormat("hh:mm:ss a");
                                         dFormat.setTimeZone(TimeZone.getDefault());
                                         curtime = dFormat.format(new Date()).toString();
-                                        banMessage = new ChatboxMessage(curUser, curUser + " this is a warning, there won't be another!", curRank, curDate, curtime);
+                                        banMessage = new ChatboxMessage(curUser, curUser + " this is a warning, there won't be another!", curRank, curDate, curtime, chatAvatar);
                                         mNewMessageRef.push().setValue(banMessage);
 
                                         break;
@@ -353,7 +355,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                                 }
                             }
                         }
-                        ChatboxMessage newMessage = new ChatboxMessage(message.getUser(), curMessage, message.getRank(), message.getDate(), message.getTime());
+                        ChatboxMessage newMessage = new ChatboxMessage(message.getUser(), curMessage, message.getRank(), message.getDate(), message.getTime(), chatAvatar);
                         mNewMessageRef.push().setValue(newMessage);
                         et_message.setText("");
                         break;
@@ -395,7 +397,7 @@ public class Chatbox_Activity extends AppCompatActivity {
         SimpleDateFormat dFormat = new SimpleDateFormat("hh:mm:ss a");
         String curTime = dFormat.format(new Date()).toString();
 
-        ChatboxMessage message = new ChatboxMessage("DevChat Bot", "Welcome to DevChat : " + user + " is now ONLINE!", "Moderator", curDate, curTime);
+        ChatboxMessage message = new ChatboxMessage("DevChat Bot", "Welcome to DevChat : " + user + " is now ONLINE!", "Moderator", curDate, curTime, "default_url");
         mNewMessageRef.push().setValue(message);
     }
 

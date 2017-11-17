@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.commandcenter.devchat.Model.ChatboxMessage;
 import com.commandcenter.devchat.R;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,11 +24,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessageAdapter.MessageViewHolder>{
 
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mUsers;
     private List<ChatboxMessage> messageList;
     private Context context;
 
@@ -35,6 +40,18 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
         this.context = context;
         this.messageList = messageList;
 
+        init();
+
+    }
+
+    private void init() {
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+        }else {
+            mUsers = mDatabase.getReference("users");
+        }
 
     }
 
@@ -47,14 +64,19 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
     }
 
     @Override
-    public void onBindViewHolder(MessageViewHolder holder, int position) {
+    public void onBindViewHolder(final MessageViewHolder holder, int position) {
 
         ChatboxMessage message = messageList.get(position);
         holder.tv_message.setText(message.getChatMessage());
         holder.tv_username.setText(message.getUser());
         holder.tv_rank.setText(message.getRank());
-        holder.getImageView().setImageResource(R.drawable.ic_person);
-
+       // holder.getImageView().setImageResource(R.drawable.ic_person);
+        String img_url = message.getAvatar_Url().toString();
+        if (img_url.equalsIgnoreCase("default_url")) {
+            holder.iv_avatar.setImageResource(R.drawable.ic_person);
+        }else {
+            Picasso.with(context).load(message.getAvatar_Url()).placeholder(R.drawable.ic_person).into(holder.iv_avatar);
+        }
     }
 
     @Override
@@ -74,7 +96,7 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
             tv_message  = (TextView) itemView.findViewById(R.id.chatbox_single_message_tv_message);
             tv_username = (TextView) itemView.findViewById(R.id.chatbox_single_row_tv_username);
             tv_rank     = (TextView) itemView.findViewById(R.id.chatbox_single_row_tv_rank);
-            iv_avatar   = (ImageView) itemView.findViewById(R.id.chatbox_single_row_iv_avatar);
+            iv_avatar   = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.chatbox_single_row_iv_avatar);
         }
 
         public ImageView getImageView() {
