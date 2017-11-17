@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     defaultConfig {
         applicationId "com.commandcenter.devchat"
-        minSdkVersion 22
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -50,8 +50,7 @@ dependencies {
 
     //Circle ImageView
     compile 'de.hdodenhof:circleimageview:2.2.0'
-    //Image Crop
-    compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+
 
 }
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commandcenter.devchat.R;
+import com.commandcenter.devchat.Utils.DevChat_Alert_Builder;
 import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,8 +35,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 import java.io.ByteArrayOutputStream;
 
@@ -49,7 +49,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
     private StorageReference mStorage;
     private static final int GALLERY_PICK = 1;
 
-    Button btn_Edit;
+    Button btn_Edit, btn_setName;
     TextView tv_displayName, tv_Rank, tv_Friends, tv_status;
     ImageView iv_profile_image;
 
@@ -69,6 +69,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
         tv_status      = (TextView) findViewById(R.id.main_user_profile_tv_status);
         tv_Friends     = (TextView) findViewById(R.id.main_user_profile_tv_friends);
         iv_profile_image = (ImageView) findViewById(R.id.main_iv_user_profile);
+        btn_setName    =  (Button) findViewById(R.id.main_user_profile_btn_Edit);
         btn_Edit       = (Button) findViewById(R.id.main_user_profile_btn_ChangeImage);
 
         btn_Edit.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +84,14 @@ public class Main_Settings_Profile extends AppCompatActivity {
                     Toast.makeText(Main_Settings_Profile.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        btn_setName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DevChat_Alert_Builder alert = new DevChat_Alert_Builder(Main_Settings_Profile.this);
+                alert.showAlert("EDIT DISPLAY NAME", "use this dialog to edit your display name");
             }
         });
 

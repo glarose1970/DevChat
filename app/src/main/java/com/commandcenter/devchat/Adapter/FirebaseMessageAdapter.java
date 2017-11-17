@@ -71,12 +71,17 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
         holder.tv_username.setText(message.getUser());
         holder.tv_rank.setText(message.getRank());
        // holder.getImageView().setImageResource(R.drawable.ic_person);
-        String img_url = message.getAvatar_Url().toString();
-        if (img_url.equalsIgnoreCase("default_url")) {
-            holder.iv_avatar.setImageResource(R.drawable.ic_person);
-        }else {
-            Picasso.with(context).load(message.getAvatar_Url()).placeholder(R.drawable.ic_person).into(holder.iv_avatar);
-        }
+        String img_url;
+       if((img_url = message.getAvatar_Url()) != null) {
+           if (img_url.equalsIgnoreCase("default_url")) {
+               holder.iv_avatar.setImageResource(R.drawable.ic_person);
+           }else {
+               Picasso.with(context).load(message.getAvatar_Url()).placeholder(R.drawable.ic_person).into(holder.iv_avatar);
+           }
+       }else {
+           holder.iv_avatar.setImageResource(R.drawable.ic_person);
+       }
+
     }
 
     @Override
