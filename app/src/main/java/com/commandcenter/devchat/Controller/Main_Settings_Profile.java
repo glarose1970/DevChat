@@ -92,6 +92,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
             public void onClick(View v) {
                 DevChat_Alert_Builder alert = new DevChat_Alert_Builder(Main_Settings_Profile.this);
                 alert.showAlert("EDIT DISPLAY NAME", "use this dialog to edit your display name");
+                tv_displayName.setText(alert.getMessage());
             }
         });
 
