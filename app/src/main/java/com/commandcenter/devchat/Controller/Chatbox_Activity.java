@@ -100,6 +100,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                         getStatus(message.getUser());
                         if (!messageList.contains(message)) {
                             messageList.add(message);
+                            messageAdapter.notifyDataSetChanged();
                         }
                     }
                     messageAdapter = new FirebaseMessageAdapter(getApplicationContext(), messageList);
@@ -125,7 +126,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                     status = dataSnapshot.child("status").getValue().toString();
                     chatStatus = dataSnapshot.child("chatStatus").getValue().toString();
                     chatAvatar = dataSnapshot.child("main_img_url").getValue().toString();
-                    welcomeUser(user);
+                   // welcomeUser(user);
                 }
 
                 @Override
@@ -305,6 +306,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                 switch (curRank) {
                        case "Admin"://user is Admin and has more privilages
                        case "Owner":
+                       case "Co-Owner":
                        case "Moderator":
                             if (curMessage.startsWith("~")) {
                                 String[] messageDetails = curMessage.split(" ");//split the current message on the space to get the command(param 0), the username(param 1) i.e ~ban Inked
@@ -402,7 +404,7 @@ public class Chatbox_Activity extends AppCompatActivity {
         SimpleDateFormat dFormat = new SimpleDateFormat("hh:mm:ss a");
         String curTime = dFormat.format(new Date()).toString();
 
-        ChatboxMessage message = new ChatboxMessage("DevChat Bot", "Welcome to DevChat : " + user + " is now ONLINE!", "Moderator", curDate, curTime, "default_url");
+        ChatboxMessage message = new ChatboxMessage("Piggy Bot", "Welcome to DevChat : " + user + " is now ONLINE!", "Moderator", curDate, curTime, "default_url");
         mNewMessageRef.push().setValue(message);
     }
 

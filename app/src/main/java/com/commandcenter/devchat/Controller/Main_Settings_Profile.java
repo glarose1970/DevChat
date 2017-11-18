@@ -122,6 +122,14 @@ public class Main_Settings_Profile extends AppCompatActivity {
                     Intent userIntent = new Intent(Main_Settings_Profile.this, UsersList.class);
                     startActivity(userIntent);
                     return true;
+                case R.id.settings:
+                    userIntent = new Intent(Main_Settings_Profile.this, Main_Settings_Profile.class);
+                    startActivity(userIntent);
+                    return true;
+                case R.id.navChatbox:
+                    userIntent = new Intent(Main_Settings_Profile.this, Chatbox_Activity.class);
+                    startActivity(userIntent);
+                    return true;
                 default:
                     return super.onOptionsItemSelected(item);
             }

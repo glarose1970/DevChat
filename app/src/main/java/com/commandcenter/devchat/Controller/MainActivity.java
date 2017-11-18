@@ -45,15 +45,18 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mUsers;
     private DatabaseReference mMessages;
     private FirebaseUser currentUser;
+    private DatabaseReference mNewMessageRef;
 
     String[] values;
 
     private String user;
+    private String curUser;
     private String rank;
     private String time;
     private String date;
 
     private String status;
+    private String curDate;
 
     //Progress Dialog
      private ProgressDialog mLoginProgress;
@@ -63,10 +66,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        curDate = setDate();
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mUsers = mDatabase.getReference("users");
         mMessages = mDatabase.getReference("messages");
+        mNewMessageRef = mDatabase.getReference("messages").child(curDate);
+
+
 
         mLoginProgress = new ProgressDialog(this);
        // mAuth.signOut();
@@ -77,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         btn_register = (Button) findViewById(R.id.login_btnRegister);
 
         if (currentUser == null) {
-
+            currentUser = mAuth.getCurrentUser();
         }else {
             getUser();
         }
@@ -92,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     mLoginProgress.show();
                     loginUser(et_email.getText().toString(), et_password.getText().toString());
                 }else {
+
                     Intent chatBoxIntent = new Intent(MainActivity.this, Chatbox_Activity.class);
                     startActivity(chatBoxIntent);
                 }
@@ -108,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void welcomeUser(String username) {
+
+        SimpleDateFormat dFormat = new SimpleDateFormat("hh:mm:ss a");
+        String curTime = dFormat.format(new Date()).toString();
+
+        ChatboxMessage message = new ChatboxMessage("Piggy Bot", "Welcome to DevChat : " + curUser + " is now ONLINE!", "Moderator", curDate, curTime, "default_url");
+        mNewMessageRef.push().setValue(message);
+    }
+
 
     private void loginUser(String email, String password) {
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
@@ -121,6 +138,20 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 //sign in successful
                                 mLoginProgress.dismiss();
+                                currentUser = mAuth.getCurrentUser();
+                                mUsers.child(currentUser.getUid()).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        curUser = dataSnapshot.getValue().toString();
+                                        welcomeUser(curUser);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
                                 setStatus(user,"Online");
                                 Intent chatBoxIntent = new Intent(MainActivity.this, Chatbox_Activity.class);
                                 chatBoxIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -135,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
     }
+
 
     private void getUser() {
         mUsers.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

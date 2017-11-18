@@ -70,6 +70,7 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
         holder.tv_message.setText(message.getChatMessage());
         holder.tv_username.setText(message.getUser());
         holder.tv_rank.setText(message.getRank());
+        holder.tv_time.setText(message.getTime());
        // holder.getImageView().setImageResource(R.drawable.ic_person);
         String img_url;
        if((img_url = message.getAvatar_Url()) != null) {
@@ -91,7 +92,7 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tv_message, tv_username, tv_rank;
+        public TextView tv_message, tv_username, tv_rank, tv_time;
         public ImageView iv_avatar;
         public CardView card;
 
@@ -100,7 +101,9 @@ public class FirebaseMessageAdapter extends RecyclerView.Adapter<FirebaseMessage
             card = (CardView) itemView.findViewById(R.id.chatbox_message_cardview);
             tv_message  = (TextView) itemView.findViewById(R.id.chatbox_single_message_tv_message);
             tv_username = (TextView) itemView.findViewById(R.id.chatbox_single_row_tv_username);
+            tv_time     = (TextView) itemView.findViewById(R.id.chatbox_single_row_tv_time);
             tv_rank     = (TextView) itemView.findViewById(R.id.chatbox_single_row_tv_rank);
+
             iv_avatar   = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.chatbox_single_row_iv_avatar);
         }
 
