@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Chatbox_Activity extends AppCompatActivity {
 
     private EditText et_message;
@@ -71,6 +73,7 @@ public class Chatbox_Activity extends AppCompatActivity {
     private String status;
     private String chatStatus;
     private String chatAvatar;
+    private CircleImageView avatar;
 
     private String curDate;
     private String time;
@@ -84,6 +87,8 @@ public class Chatbox_Activity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             Init();
             //Load messages from current date
+
+
 
             mNewMessageRef.addValueEventListener(new ValueEventListener() {
                 @Override
