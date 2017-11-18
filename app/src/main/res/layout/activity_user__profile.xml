@@ -60,7 +60,14 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/send_friend_request"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccentLight"/>
+
+        <Button
+            android:id="@+id/user_profile_btn_removeFriend"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/remove_friend"
             android:background="@color/colorAccentLight"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

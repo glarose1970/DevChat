@@ -1,9 +1,14 @@
 package com.commandcenter.devchat.Controller;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.commandcenter.devchat.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,5 +82,60 @@ public class User_Profile extends AppCompatActivity {
         super.onStart();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navigation, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (mAuth.getCurrentUser() != null) {
+
+            switch (item.getItemId()) {
+                case R.id.logout:
+                    Toast.makeText(this, "User signed out!", Toast.LENGTH_SHORT).show();
+                    signOut();
+                    Intent intent = new Intent(User_Profile.this, MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.navFriends:
+
+                    return true;
+                case R.id.navUsers:
+                    intent = new Intent(User_Profile.this, UsersList.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.settings:
+                    intent = new Intent(User_Profile.this, Main_Settings_Profile.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.navChatbox:
+                    intent = new Intent(User_Profile.this, Chatbox_Activity.class);
+                    startActivity(intent);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void signOut() {
+
+        if (mUser != null) {
+            mUsersData.child(mUser.getUid()).child("status").setValue("Offline");
+            mAuth.signOut();
+            Intent intent = new Intent(User_Profile.this, MainActivity.class);
+            startActivity(intent);
+        }else {
+            Intent intent = new Intent(User_Profile.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

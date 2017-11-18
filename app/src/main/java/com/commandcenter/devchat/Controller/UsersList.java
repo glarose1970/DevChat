@@ -115,6 +115,14 @@ public class UsersList extends AppCompatActivity {
                 case R.id.navUsers:
 
                     return true;
+                case R.id.settings:
+                    intent = new Intent(UsersList.this, Main_Settings_Profile.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.navChatbox:
+                    intent = new Intent(UsersList.this, Chatbox_Activity.class);
+                    startActivity(intent);
+                    return true;
                 default:
                     return super.onOptionsItemSelected(item);
             }

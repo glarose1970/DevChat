@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/navChatbox"
+        android:icon="@drawable/ic_chat_bubble"
+        android:title="Chatbox"
+        app:showAsAction="always">
+    </item>
+    <item
         android:id="@+id/navFriends"
-        android:title="@string/navfriends">
+        android:icon="@drawable/ic_people_friends"
+        android:title="@string/navfriends"
+        app:showAsAction="always">
     </item>
     <item
         android:id="@+id/navUsers"
-        android:title="@string/navUsers">
+        android:icon="@drawable/ic_people"
+        android:title="@string/navUsers"
+        app:showAsAction="always">
     </item>
     <item
         android:id="@+id/settings"
-        android:title="@string/settings">
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
+        app:showAsAction="always">
     </item>
 
     <item
         android:id="@+id/logout"
-        android:title="@string/navLogout">
+        android:icon="@drawable/ic_close"
+        android:title="@string/navLogout"
+        app:showAsAction="always">
     </item>
 </menu>

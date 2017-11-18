@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                 finish();
                             }else {
                                 //sign in failure
+                                mLoginProgress.dismiss();
                                 Toast.makeText(MainActivity.this, "Email not found, Please Register a new Account!", Toast.LENGTH_SHORT).show();
                             }
                         }
