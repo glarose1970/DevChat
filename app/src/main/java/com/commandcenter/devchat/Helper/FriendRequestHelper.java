@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class FriendRequestHelper extends Application {
@@ -50,67 +51,77 @@ public class FriendRequestHelper extends Application {
         this.mCurrentUser = mCurrentUser;
         mCurUserID = curUserID;
 
+        if (mAuth != null) {
+            mAuth = FirebaseAuth.getInstance();
+            mDataRef = FirebaseDatabase.getInstance();
+            mUsers =  mDataRef.getReference("users");
+        }else {
+           // mAuth = FirebaseAuth.getInstance();
+            mDataRef = FirebaseDatabase.getInstance();
+            mUsers =  mDataRef.getReference("users");
+        }
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mAuth = FirebaseAuth.getInstance();
-        mDataRef = FirebaseDatabase.getInstance();
-        mUser_Requests = mDataRef.getReference().child("users").child(mCurUserID).child("requests");
-        mFriend_User_Requests = mDataRef.getReference().child("users").child(friendUserID).child("requests");
-        mUsers =  mDataRef.getReference("users");
+
+
 
     }
 
     public void sendRequest(final String senderID, final String receiverID) {
 
-        mFriend_User_Requests.child(senderID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        //Set the friend node
+            mUsers.child(receiverID).child("requests").child(senderID).child("request_code").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChild("request_code")) {
-                    String request_status = dataSnapshot.getValue().toString();
-                    if (request_status.equalsIgnoreCase("sent")) {
+                    if (dataSnapshot.hasChild("request_code")) {
+                        String request_status = dataSnapshot.getValue().toString();
+                        if (request_status.equalsIgnoreCase("pending")) {
 
+                        }
+                    }else {
+
+                        mUsers.child(receiverID).child("requests").child(senderID).child("request_code").setValue("pending")
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(context, "Friend Request Sent!", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
                     }
-                }else {
-                    mUsers.child(receiverID).child("requests").child(senderID).child("request_code").setValue("sent")
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(context, "Friend Request Sent!", Toast.LENGTH_SHORT).show();
-
-                                }
-                            });
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        mUser_Requests.child(receiverID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("request_code")) {
-                    String request_status = dataSnapshot.getValue().toString();
-                    if (request_status.equalsIgnoreCase("pending")) {
-
-                    }
-                }else {
-                    mUsers.child(senderID).child("requests").child(receiverID).child("request_status").setValue("pending");
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
+            });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+       //set the current user node
+            mUsers.child(senderID).child("requests").child(receiverID).child("request_code").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.hasChild("request_code")) {
+                        String request_status = dataSnapshot.getValue().toString();
+                        if (request_status.equalsIgnoreCase("sent")) {
+
+                        }
+                    }else {
+                        mUsers.child(senderID).child("requests").child(receiverID).child("request_code").setValue("pending");
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
     }
 
 

@@ -54,8 +54,8 @@ public class User_Profile extends AppCompatActivity {
            // mAuth = FirebaseAuth.getInstance();
             mDatabase = FirebaseDatabase.getInstance();
             mUsersData = mDatabase.getReference().child("users");
-            mFriendsData = mDatabase.getReference().child("users").child(mUser.getUid()).child("friends");
-            mFriendRequestData = mDatabase.getReference().child("users").child(mUser.getUid()).child("requests");
+            mFriendsData = mDatabase.getReference("users").child(mUser.getUid()).child("friends");
+            mFriendRequestData = mDatabase.getReference("users").child(mUser.getUid()).child("requests");
             mUser = mAuth.getCurrentUser();
         }else {
             mAuth = FirebaseAuth.getInstance();
@@ -127,6 +127,7 @@ public class User_Profile extends AppCompatActivity {
                                     requestHelper.sendRequest(mUser.getUid().toString(), userID);
                                     btn_sed_request.setEnabled(false);
                                     btn_sed_request.setBackgroundColor(Color.RED);
+                                    btn_sed_request.setTextColor(Color.BLACK);
                                     btn_sed_request.setText("Request Sent");
                                 }
                             }
