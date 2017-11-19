@@ -30,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -41,28 +42,42 @@ import java.io.ByteArrayOutputStream;
 
 public class Main_Settings_Profile extends AppCompatActivity {
 
-    private DatabaseReference mUsers;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
-    private FirebaseUser curUser;
+    private DatabaseReference mUsers;
+    private FirebaseUser mCurUser;
 
     private StorageReference mStorage;
     private static final int GALLERY_PICK = 1;
 
-    Button btn_Edit, btn_setName;
+    Button btn_Edit, btn_setName, btn_Accept_Request;
     TextView tv_displayName, tv_Rank, tv_Friends, tv_status;
     ImageView iv_profile_image;
 
     ProgressDialog mUploadProgress;
-
+    int requestCount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__settings__profile);
 
-        mDatabase = FirebaseDatabase.getInstance();
-        mUsers = mDatabase.getReference("users");
-        mStorage = FirebaseStorage.getInstance().getReference();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+            mCurUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mStorage = FirebaseStorage.getInstance().getReference();
+            setUserInfo();
+        }else {
+            mCurUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mStorage = FirebaseStorage.getInstance().getReference();
+            setUserInfo();
+        }
+
+
 
         tv_displayName = (TextView) findViewById(R.id.main_user_profile_tv_displayName);
         tv_Rank        = (TextView) findViewById(R.id.main_user_profile_tv_rank);
@@ -71,6 +86,24 @@ public class Main_Settings_Profile extends AppCompatActivity {
         iv_profile_image = (ImageView) findViewById(R.id.main_iv_user_profile);
         btn_setName    =  (Button) findViewById(R.id.main_user_profile_btn_Edit);
         btn_Edit       = (Button) findViewById(R.id.main_user_profile_btn_ChangeImage);
+        btn_Accept_Request = (Button) findViewById(R.id.main_user_profile_btn_Accept_Requests);
+
+        //========== Get Request Count ==========//
+      mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+              Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+              for (DataSnapshot request : children) {
+                  requestCount++;
+              }
+              tv_Friends.setText("Requests : " + requestCount);
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+      });
 
         btn_Edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +126,34 @@ public class Main_Settings_Profile extends AppCompatActivity {
                 DevChat_Alert_Builder alert = new DevChat_Alert_Builder("EDIT DISPLAY NAME",Main_Settings_Profile.this);
                 alert.showAlert("EDIT DISPLAY NAME");
                 tv_displayName.setText(alert.getMessage());
+            }
+        });
+
+        if (requestCount < 1) {
+            btn_Accept_Request.setEnabled(false);
+        }
+
+        btn_Accept_Request.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            String childID = child.getKey().toString();
+                            mUsers.child(childID).child("friends").child(mCurUser.getUid()).child("friend_status").setValue("friends");
+                            mUsers.child(childID).child("requests").child(mCurUser.getUid()).child("request_code").removeValue();
+                            mUsers.child(mCurUser.getUid()).child("friends").child(childID).child("friend_status").setValue("friends");
+                            mUsers.child(mCurUser.getUid()).child("requests").child(childID).child("request_code").removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -181,10 +242,10 @@ public class Main_Settings_Profile extends AppCompatActivity {
 
                                String downloadUrl = task.getResult().getDownloadUrl().toString();
 
-                               if (curUser == null) {
+                               if (mCurUser == null) {
                                    mAuth = FirebaseAuth.getInstance();
-                                   curUser = mAuth.getCurrentUser();
-                                   mUsers.child(curUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                   mCurUser = mAuth.getCurrentUser();
+                                   mUsers.child(mCurUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
                                        @Override
                                        public void onComplete(@NonNull Task<Void> task) {
                                            if (task.isSuccessful()) {
@@ -196,7 +257,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
                                    });
 
                                }else {
-                                   mUsers.child(curUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                   mUsers.child(mCurUser.getUid()).child("main_img_url").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
                                        @Override
                                        public void onComplete(@NonNull Task<Void> task) {
                                            if (task.isSuccessful()) {
@@ -226,15 +287,6 @@ public class Main_Settings_Profile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (mAuth == null) {
-            mAuth = FirebaseAuth.getInstance();
-            curUser = mAuth.getCurrentUser();
-            setUserInfo();
-        }else {
-            curUser = mAuth.getCurrentUser();
-            setUserInfo();
-        }
 
     }
 

@@ -21,4 +21,8 @@
     <string name="rank">Rank</string>
     <string name="display_name">Display Name</string>
     <string name="remove_friend">Remove Friend</string>
+    <string name="accept_friend_requests">Accept Friend Requests</string>
+    <string name="edit_display_name">Edit Display Name</string>
+    <string name="change_image">Change Image</string>
+    <string name="friends">Friends :</string>
 </resources>

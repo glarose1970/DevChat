@@ -85,14 +85,14 @@ public class User_Profile extends AppCompatActivity {
 
             }
         });
-
+        //====== check request code ========
         mUsersData.child(userID).child("requests").child(mUser.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(("request_code"))) {
                             String requestCode = dataSnapshot.child("request_code").getValue().toString();
-                            if (requestCode.equalsIgnoreCase("sent")) {
+                            if (requestCode.equalsIgnoreCase("pending")) {
                                 btn_sed_request.setEnabled(false);
                                 btn_sed_request.setBackgroundColor(Color.RED);
                                 btn_sed_request.setTextColor(Color.BLACK);
@@ -106,6 +106,26 @@ public class User_Profile extends AppCompatActivity {
 
                     }
                 });
+        //======== Check Friend Status ==========//
+        mUsersData.child(userID).child("friends").child(mUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("friend_status")) {
+                            String friendCode = dataSnapshot.child("friend_status").getValue().toString();
+                            if (friendCode.equalsIgnoreCase("friends")) {
+                                btn_sed_request.setEnabled(false);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
         //*****************Button Click**********************
         btn_sed_request.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +136,7 @@ public class User_Profile extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild(("request_code"))) {
                                     String requestCode = dataSnapshot.child("request_code").getValue().toString();
-                                    if (requestCode.equalsIgnoreCase("sent")) {
+                                    if (requestCode.equalsIgnoreCase("pending")) {
                                         btn_sed_request.setEnabled(false);
                                         btn_sed_request.setBackgroundColor(Color.RED);
                                         btn_sed_request.setTextColor(Color.BLACK);
