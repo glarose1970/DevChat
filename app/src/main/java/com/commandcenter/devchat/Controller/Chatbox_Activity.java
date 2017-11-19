@@ -100,7 +100,7 @@ public class Chatbox_Activity extends AppCompatActivity {
                         getStatus(message.getUser());
                         if (!messageList.contains(message)) {
                             messageList.add(message);
-                            messageAdapter.notifyDataSetChanged();
+
                         }
                     }
                     messageAdapter = new FirebaseMessageAdapter(getApplicationContext(), messageList);

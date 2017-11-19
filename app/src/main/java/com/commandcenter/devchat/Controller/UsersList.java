@@ -47,6 +47,36 @@ public class UsersList extends AppCompatActivity {
         userRecView.setLayoutManager(new LinearLayoutManager(this));
 
 
+        FirebaseRecyclerAdapter<User, UsersViewHolder> allUsersAdapter = new FirebaseRecyclerAdapter<User, UsersViewHolder>(
+                User.class,
+                R.layout.single_user_row_layout,
+                UsersViewHolder.class,
+                mUsers) {
+            @Override
+            protected void populateViewHolder(final UsersViewHolder viewHolder, User users, int position) {
+
+                viewHolder.setName(users.getUsername());
+                viewHolder.setRank(users.getRank());
+                viewHolder.setStatus(users.getStatus());
+                viewHolder.setProfileImg(users.getMain_img_url());
+
+               final String user_id = getRef(position).getKey();
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(UsersList.this, User_Profile.class);
+                        intent.putExtra("user_id", user_id);
+                        startActivity(intent);
+                    }
+                });
+
+            }
+        };
+
+        userRecView.setAdapter(allUsersAdapter);
+
 
     }
 
@@ -54,40 +84,7 @@ public class UsersList extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<User, UsersViewHolder> allUsersAdapter = new FirebaseRecyclerAdapter<User, UsersViewHolder>(
-                User.class,
-                R.layout.single_user_row_layout,
-                UsersViewHolder.class,
-                mUsers) {
-            @Override
-            protected void populateViewHolder(UsersViewHolder viewHolder, User users, int position) {
 
-                if (mAuth.getCurrentUser() != null) {
-                    String userUID = mAuth.getCurrentUser().getUid();
-
-                    if (!userUID.equalsIgnoreCase(users.getUserID())) {
-                        viewHolder.setName(users.getUsername());
-                        viewHolder.setRank(users.getRank());
-                        viewHolder.setStatus(users.getStatus());
-                        viewHolder.setProfileImg(users.getMain_img_url());
-
-                        final String user_id = getRef(position).getKey();
-                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                Intent intent = new Intent(UsersList.this, User_Profile.class);
-                                intent.putExtra("user_id", user_id);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                }
-
-            }
-        };
-
-        userRecView.setAdapter(allUsersAdapter);
     }
 
     @Override
