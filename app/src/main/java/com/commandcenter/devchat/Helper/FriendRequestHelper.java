@@ -117,7 +117,7 @@ public class FriendRequestHelper extends Application {
 
             }
         });
-        //Set the friend node
+        //==========Set the friend node==========//
             mUsers.child(receiverID).child("requests").child(senderID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -147,7 +147,7 @@ public class FriendRequestHelper extends Application {
             });
 
 
-       //set the current user node
+       //==========set the current user node==========//
             mUsers.child(senderID).child("requests").child(receiverID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -173,6 +173,10 @@ public class FriendRequestHelper extends Application {
 
                 }
             });
+
+    }
+
+    public void acceptRequest(String senderID, String receiverID) {
 
     }
 

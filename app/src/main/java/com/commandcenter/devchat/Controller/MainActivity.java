@@ -36,29 +36,32 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
+    //==========CONTROLS==========//
     EditText et_email, et_password;
     Button btn_login, btn_register;
+    //==========END CONTROLS==========//
 
-    //Firebase Auth
+    //==========FIREBASE==========//
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mUsers;
     private DatabaseReference mMessages;
     private FirebaseUser currentUser;
     private DatabaseReference mNewMessageRef;
+    //==========END FIREBASE==========//
 
-    String[] values;
-
+    //==========FIELDS==========//
+    private String[] values;
     private String user;
     private String curUser;
     private String rank;
     private String time;
     private String date;
-
     private String status;
     private String curDate;
+    //==========END FIELDS==========//
 
-    //Progress Dialog
+    //==========PROGRESS DIALOG==========//
      private ProgressDialog mLoginProgress;
 
     @Override
@@ -66,28 +69,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        curDate = setDate();
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
-        mUsers = mDatabase.getReference("users");
-        mMessages = mDatabase.getReference("messages");
-        mNewMessageRef = mDatabase.getReference("messages").child(curDate);
-
-
-
-        mLoginProgress = new ProgressDialog(this);
-       // mAuth.signOut();
-        et_email    = (EditText) findViewById(R.id.login_et_email);
-        et_password = (EditText) findViewById(R.id.login_et_password);
-
-        btn_login    = (Button) findViewById(R.id.login_btnLogin);
-        btn_register = (Button) findViewById(R.id.login_btnRegister);
-
-        if (currentUser == null) {
-            currentUser = mAuth.getCurrentUser();
-        }else {
-            getUser();
-        }
+        //==========SETUP FIREBASE==========//
+       init();
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +98,35 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    //==========SETUP FIREBASE/CONTROLS==========//
+    private void init() {
+
+        if (mAuth == null) {
+            curDate = setDate();
+            mAuth = FirebaseAuth.getInstance();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mMessages = mDatabase.getReference("messages");
+            mNewMessageRef = mDatabase.getReference("messages").child(curDate);
+
+        }else {
+            curDate = setDate();
+            currentUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mMessages = mDatabase.getReference("messages");
+            mNewMessageRef = mDatabase.getReference("messages").child(curDate);
+        }
+        mLoginProgress = new ProgressDialog(this);
+        // mAuth.signOut();
+        et_email    = (EditText) findViewById(R.id.login_et_email);
+        et_password = (EditText) findViewById(R.id.login_et_password);
+
+        btn_login    = (Button) findViewById(R.id.login_btnLogin);
+        btn_register = (Button) findViewById(R.id.login_btnRegister);
+
+    }
+    //==========END SETUP==========//
 
     private void welcomeUser(String username) {
 
@@ -224,10 +236,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return status;
-    }
-
-    private void Init() {
-
     }
 
     private String setDate() {

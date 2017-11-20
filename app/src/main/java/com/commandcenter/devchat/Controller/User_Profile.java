@@ -53,21 +53,7 @@ public class User_Profile extends AppCompatActivity {
         btn_send_request = (Button) findViewById(R.id.user_profile_btnSendRequest);
         btn_remove_friend = (Button) findViewById(R.id.user_profile_btn_removeFriend);
 
-        if (mAuth != null) {
-           // mAuth = FirebaseAuth.getInstance();
-            mDatabase = FirebaseDatabase.getInstance();
-            mUsersData = mDatabase.getReference().child("users");
-            mFriendsData = mDatabase.getReference("users").child(mUser.getUid()).child("friends");
-            mFriendRequestData = mDatabase.getReference("users").child(mUser.getUid()).child("requests");
-            mUser = mAuth.getCurrentUser();
-        }else {
-            mAuth = FirebaseAuth.getInstance();
-            mUser = mAuth.getCurrentUser();
-            mDatabase = FirebaseDatabase.getInstance();
-            mUsersData = mDatabase.getReference("users");
-            mFriendsData = mDatabase.getReference().child("users").child(mUser.getUid()).child("friends");
-            mFriendRequestData = mDatabase.getReference().child("users").child(mUser.getUid()).child("requests");
-        }
+        init();
 
         //==========Hide Buttons if Viewing Your Profile
         if (userID.equalsIgnoreCase(mUser.getUid())) {
@@ -169,6 +155,25 @@ public class User_Profile extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void init() {
+
+        if (mAuth != null) {
+            // mAuth = FirebaseAuth.getInstance();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsersData = mDatabase.getReference().child("users");
+            mFriendsData = mDatabase.getReference("users").child(mUser.getUid()).child("friends");
+            mFriendRequestData = mDatabase.getReference("users").child(mUser.getUid()).child("requests");
+            mUser = mAuth.getCurrentUser();
+        }else {
+            mAuth = FirebaseAuth.getInstance();
+            mUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsersData = mDatabase.getReference("users");
+            mFriendsData = mDatabase.getReference().child("users").child(mUser.getUid()).child("friends");
+            mFriendRequestData = mDatabase.getReference().child("users").child(mUser.getUid()).child("requests");
+        }
     }
 
     @Override
