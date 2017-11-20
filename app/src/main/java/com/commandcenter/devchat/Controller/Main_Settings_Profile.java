@@ -42,26 +42,28 @@ import java.io.ByteArrayOutputStream;
 
 public class Main_Settings_Profile extends AppCompatActivity {
 
-
+    //==========Firebase==========//
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mUsers;
     private FirebaseUser mCurUser;
-
     private StorageReference mStorage;
-    private static final int GALLERY_PICK = 1;
 
+    private static final int GALLERY_PICK = 1;
+    int requestCount;
+
+    //==========Create user Controls==========//
     Button btn_Edit, btn_setName, btn_Accept_Request;
     TextView tv_displayName, tv_Rank, tv_Friends, tv_status;
     ImageView iv_profile_image;
-
     ProgressDialog mUploadProgress;
-    int requestCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__settings__profile);
 
+        //==========Set the Firebase Auth==========//
         if (mAuth == null) {
             mAuth = FirebaseAuth.getInstance();
             mCurUser = mAuth.getCurrentUser();
@@ -77,8 +79,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
             setUserInfo();
         }
 
-
-
+        //==========Initialize the View's Controls==========//
         tv_displayName = (TextView) findViewById(R.id.main_user_profile_tv_displayName);
         tv_Rank        = (TextView) findViewById(R.id.main_user_profile_tv_rank);
         tv_status      = (TextView) findViewById(R.id.main_user_profile_tv_status);
@@ -89,22 +90,23 @@ public class Main_Settings_Profile extends AppCompatActivity {
         btn_Accept_Request = (Button) findViewById(R.id.main_user_profile_btn_Accept_Requests);
 
         //========== Get Request Count ==========//
-      mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
-          @Override
-          public void onDataChange(DataSnapshot dataSnapshot) {
-              Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-              for (DataSnapshot request : children) {
-                  requestCount++;
-              }
-              tv_Friends.setText("Requests : " + requestCount);
-          }
+        mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                for (DataSnapshot request : children) {
+                    requestCount++;
+                }
+                tv_Friends.setText("Requests : " + requestCount);
+            }
 
-          @Override
-          public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-          }
-      });
+            }
+        });
 
+        //==========Edit the User Profile Image==========//
         btn_Edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +121,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
 
             }
         });
-
+        //==========Change The User Display Name==========//
         btn_setName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,31 +131,14 @@ public class Main_Settings_Profile extends AppCompatActivity {
             }
         });
 
-        if (requestCount < 1) {
-            btn_Accept_Request.setEnabled(false);
-        }
 
+        //==========Accept the User Friend Requests==========//
         btn_Accept_Request.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                        for (DataSnapshot child : children) {
-                            String childID = child.getKey().toString();
-                            mUsers.child(childID).child("friends").child(mCurUser.getUid()).child("friend_status").setValue("friends");
-                            mUsers.child(childID).child("requests").child(mCurUser.getUid()).child("request_code").removeValue();
-                            mUsers.child(mCurUser.getUid()).child("friends").child(childID).child("friend_status").setValue("friends");
-                            mUsers.child(mCurUser.getUid()).child("requests").child(childID).child("request_code").removeValue();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                //TODO Query to search for PENDING statusCode
+                mUsers.child(mCurUser.getUid()).child("requests");
             }
         });
 

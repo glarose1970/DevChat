@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.commandcenter.devchat.Helper.FriendRequestHelper;
 import com.commandcenter.devchat.R;
+import com.commandcenter.devchat.Utils.Request_Code;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +27,7 @@ import com.squareup.picasso.Picasso;
 public class User_Profile extends AppCompatActivity {
 
     private TextView tv_displayName, tv_Rank, tv_Status;
-    private Button btn_sed_request;
+    private Button btn_send_request, btn_remove_friend;
     private de.hdodenhof.circleimageview.CircleImageView iv_profileImg;
 
     private FirebaseAuth mAuth;
@@ -36,6 +37,8 @@ public class User_Profile extends AppCompatActivity {
     private DatabaseReference mFriendRequestData;
     private DatabaseReference mUsersData;
 
+    private boolean isFriend;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +46,12 @@ public class User_Profile extends AppCompatActivity {
 
         final String userID = getIntent().getStringExtra("user_id");
 
-
         tv_displayName = (TextView) findViewById(R.id.user_profile_tv_displayName);
         tv_Rank        = (TextView) findViewById(R.id.user_profile_tv_Rank);
         tv_Status      = (TextView) findViewById(R.id.user_profile_tv_Status);
         iv_profileImg  = (de.hdodenhof.circleimageview.CircleImageView) findViewById(R.id.user_profile_iv_profileImg);
-        btn_sed_request = (Button) findViewById(R.id.user_profile_btnSendRequest);
+        btn_send_request = (Button) findViewById(R.id.user_profile_btnSendRequest);
+        btn_remove_friend = (Button) findViewById(R.id.user_profile_btn_removeFriend);
 
         if (mAuth != null) {
            // mAuth = FirebaseAuth.getInstance();
@@ -64,6 +67,12 @@ public class User_Profile extends AppCompatActivity {
             mUsersData = mDatabase.getReference("users");
             mFriendsData = mDatabase.getReference().child("users").child(mUser.getUid()).child("friends");
             mFriendRequestData = mDatabase.getReference().child("users").child(mUser.getUid()).child("requests");
+        }
+
+        //==========Hide Buttons if Viewing Your Profile
+        if (userID.equalsIgnoreCase(mUser.getUid())) {
+            btn_send_request.setVisibility(View.GONE);
+            btn_remove_friend.setVisibility(View.GONE);
         }
 
         mUsersData.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -92,11 +101,11 @@ public class User_Profile extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(("request_code"))) {
                             String requestCode = dataSnapshot.child("request_code").getValue().toString();
-                            if (requestCode.equalsIgnoreCase("pending")) {
-                                btn_sed_request.setEnabled(false);
-                                btn_sed_request.setBackgroundColor(Color.RED);
-                                btn_sed_request.setTextColor(Color.BLACK);
-                                btn_sed_request.setText("Request Sent");
+                            if (requestCode.equalsIgnoreCase(Request_Code.PENDING.toString())) {
+                                btn_send_request.setEnabled(false);
+                                btn_send_request.setBackgroundColor(Color.RED);
+                                btn_send_request.setTextColor(Color.BLACK);
+                                btn_send_request.setText("Request Sent");
                             }
                         }
                     }
@@ -107,27 +116,26 @@ public class User_Profile extends AppCompatActivity {
                     }
                 });
         //======== Check Friend Status ==========//
-        mUsersData.child(userID).child("friends").child(mUser.getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChild("friend_status")) {
-                            String friendCode = dataSnapshot.child("friend_status").getValue().toString();
-                            if (friendCode.equalsIgnoreCase("friends")) {
-                                btn_sed_request.setEnabled(false);
-                            }
-                        }
+        mUsersData.child(mUser.getUid()).child("requests").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("request_code")) {
+                    String friend = dataSnapshot.child("request_code").getValue().toString();
+                    if (friend.equalsIgnoreCase(Request_Code.ACCEPTED.toString())) {
+                        isFriend = true;
                     }
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
 
 
-        //*****************Button Click**********************
-        btn_sed_request.setOnClickListener(new View.OnClickListener() {
+        //==========Send Friend Request Button Click==========//
+        btn_send_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mUsersData.child(userID).child("requests").child(mUser.getUid())
@@ -136,19 +144,19 @@ public class User_Profile extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.hasChild(("request_code"))) {
                                     String requestCode = dataSnapshot.child("request_code").getValue().toString();
-                                    if (requestCode.equalsIgnoreCase("pending")) {
-                                        btn_sed_request.setEnabled(false);
-                                        btn_sed_request.setBackgroundColor(Color.RED);
-                                        btn_sed_request.setTextColor(Color.BLACK);
-                                        btn_sed_request.setText("Request Sent");
+                                    if (requestCode.equalsIgnoreCase(Request_Code.PENDING.toString())) {
+                                        btn_send_request.setEnabled(false);
+                                        btn_send_request.setBackgroundColor(Color.RED);
+                                        btn_send_request.setTextColor(Color.BLACK);
+                                        btn_send_request.setText("Request Sent");
                                     }
                                 }else {
                                     FriendRequestHelper requestHelper = new FriendRequestHelper(User_Profile.this,mUser.getUid().toString(), userID);
                                     requestHelper.sendRequest(mUser.getUid().toString(), userID);
-                                    btn_sed_request.setEnabled(false);
-                                    btn_sed_request.setBackgroundColor(Color.RED);
-                                    btn_sed_request.setTextColor(Color.BLACK);
-                                    btn_sed_request.setText("Request Sent");
+                                    btn_send_request.setEnabled(false);
+                                    btn_send_request.setBackgroundColor(Color.RED);
+                                    btn_send_request.setTextColor(Color.BLACK);
+                                    btn_send_request.setText("Request Sent");
                                 }
                             }
 

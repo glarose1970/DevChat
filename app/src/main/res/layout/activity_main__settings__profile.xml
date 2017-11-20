@@ -30,7 +30,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:hint="Display Name :"
+                    android:layout_gravity="center_horizontal"
+                    android:hint="@string/display_name"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -39,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:hint="Status :"
+                    android:hint="@string/status"
                     android:textSize="18sp"
                     android:textStyle="italic" />
 
@@ -48,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:hint="Rank :"
+                    android:hint="@string/rank"
                     android:textSize="18sp"
                     android:textStyle="italic" />
 
