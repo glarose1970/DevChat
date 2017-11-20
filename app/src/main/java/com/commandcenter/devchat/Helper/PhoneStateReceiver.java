@@ -80,7 +80,8 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
                 String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 Toast.makeText(context,"Ringing State Number is -" + incomingNumber ,Toast.LENGTH_SHORT).show();
-                ChatboxMessage message = new ChatboxMessage("Piggy Bot",user + "Someone is receiving a phone call and may not respond right away", "", curDate, "", "default_url");
+                //MESSAGE TO BE CHANGED BEFORE RELEASE
+                ChatboxMessage message = new ChatboxMessage("Piggy Bot",user + " is receiving a phone call and may not respond right away", "", curDate, "", "default_url");
                 mNewMessageRef.push().setValue(message);
             }
             if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
