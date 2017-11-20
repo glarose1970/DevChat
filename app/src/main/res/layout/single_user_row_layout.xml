@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,14 +44,19 @@
                 android:id="@+id/single_user_tv_Rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Rank"
+                android:hint="@string/rank"
                 android:textStyle="italic"/>
 
             <TextView
                 android:id="@+id/single_user_tv_Status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Status :"/>
+                android:hint="@string/status"/>
+            <TextView
+                android:id="@+id/single_user_tv_Request"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/request"/>
         </LinearLayout>
     </LinearLayout>
 

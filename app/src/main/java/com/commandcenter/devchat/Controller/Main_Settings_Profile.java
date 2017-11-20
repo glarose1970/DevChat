@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.commandcenter.devchat.Helper.FriendRequestHelper;
 import com.commandcenter.devchat.R;
 import com.commandcenter.devchat.Utils.DevChat_Alert_Builder;
 import com.firebase.client.Firebase;
@@ -63,32 +64,7 @@ public class Main_Settings_Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__settings__profile);
 
-        //==========Set the Firebase Auth==========//
-        if (mAuth == null) {
-            mAuth = FirebaseAuth.getInstance();
-            mCurUser = mAuth.getCurrentUser();
-            mDatabase = FirebaseDatabase.getInstance();
-            mUsers = mDatabase.getReference("users");
-            mStorage = FirebaseStorage.getInstance().getReference();
-            setUserInfo();
-        }else {
-            mCurUser = mAuth.getCurrentUser();
-            mDatabase = FirebaseDatabase.getInstance();
-            mUsers = mDatabase.getReference("users");
-            mStorage = FirebaseStorage.getInstance().getReference();
-            setUserInfo();
-        }
-
-        //==========Initialize the View's Controls==========//
-        tv_displayName = (TextView) findViewById(R.id.main_user_profile_tv_displayName);
-        tv_Rank        = (TextView) findViewById(R.id.main_user_profile_tv_rank);
-        tv_status      = (TextView) findViewById(R.id.main_user_profile_tv_status);
-        tv_Friends     = (TextView) findViewById(R.id.main_user_profile_tv_friends);
-        iv_profile_image = (ImageView) findViewById(R.id.main_iv_user_profile);
-        btn_setName    =  (Button) findViewById(R.id.main_user_profile_btn_Edit);
-        btn_Edit       = (Button) findViewById(R.id.main_user_profile_btn_ChangeImage);
-        btn_Accept_Request = (Button) findViewById(R.id.main_user_profile_btn_Accept_Requests);
-
+        init();
         //========== Get Request Count ==========//
         mUsers.child(mCurUser.getUid()).child("requests").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -132,18 +108,48 @@ public class Main_Settings_Profile extends AppCompatActivity {
         });
 
 
-        //==========Accept the User Friend Requests==========//
+        //==========ACCEPT FRIEND REQUEST==========//
         btn_Accept_Request.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //TODO Query to search for PENDING statusCode
-                mUsers.child(mCurUser.getUid()).child("requests");
+               //TODO create activity to list all user friend requests
             }
         });
+        //==========END ACCEPT FRIEND REQUEST==========//
 
     }
 
+    //==========INITIALIZE FIREBASE/CONTROLS==========//
+    private void init() {
+
+        //==========Set the Firebase Auth==========//
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+            mCurUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mStorage = FirebaseStorage.getInstance().getReference();
+            setUserInfo();
+        }else {
+            mCurUser = mAuth.getCurrentUser();
+            mDatabase = FirebaseDatabase.getInstance();
+            mUsers = mDatabase.getReference("users");
+            mStorage = FirebaseStorage.getInstance().getReference();
+            setUserInfo();
+        }
+
+        //==========Initialize the View's Controls==========//
+        tv_displayName = (TextView) findViewById(R.id.main_user_profile_tv_displayName);
+        tv_Rank        = (TextView) findViewById(R.id.main_user_profile_tv_rank);
+        tv_status      = (TextView) findViewById(R.id.main_user_profile_tv_status);
+        tv_Friends     = (TextView) findViewById(R.id.main_user_profile_tv_friends);
+        iv_profile_image = (ImageView) findViewById(R.id.main_iv_user_profile);
+        btn_setName    =  (Button) findViewById(R.id.main_user_profile_btn_Edit);
+        btn_Edit       = (Button) findViewById(R.id.main_user_profile_btn_ChangeImage);
+        btn_Accept_Request = (Button) findViewById(R.id.main_user_profile_btn_Accept_Requests);
+    }
+    //==========END INITIALIZE FIREBASE/CONTROLS==========//
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

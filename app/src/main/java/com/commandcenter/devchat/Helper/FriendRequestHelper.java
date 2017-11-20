@@ -28,38 +28,31 @@ import java.util.Date;
 
 public class FriendRequestHelper extends Application {
 
-    public enum FRIEND_REQUEST_STATE {
-        FRIEND,
-        REQUEST_SENT,
-        REQUEST_RECIEVED,
-        REQUEST_ACCEPTED,
-        REQUEST_DENIED
-    }
-
-    Context context;
+    //==========FIELDS==========//
+    private Context context;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDataRef;
     private DatabaseReference mUser_Requests;
-    private DatabaseReference mFriend_User_Requests;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mUsers;
     private String friendUserID;
     private String mCurUserID;
     private boolean isFriend;
+    //==========END FIELDS==========//
 
-    private Button btn_sendRequest;
-
-    //==========Set Receiver Variables==========//
+    //==========RECEIVER FIELDS==========//
     String receiver_userName;
     String receiver_id;
     String receiver_img_url;
+    //==========END RECEIVER FIELDS==========//
 
-    //==========Set Sender Variables==========//
+    //==========SENDER FIELDS==========//
     String sender_userName;
     String sender_id;
     String sender_img_url;
+    //==========END SENDER FIELDS==========//
 
-
+    //==========CONSTRUCTOR==========//
     public FriendRequestHelper(Context context, String friendUserID, String curUserID) {
 
         this.context = context;
@@ -72,18 +65,18 @@ public class FriendRequestHelper extends Application {
             mDataRef = FirebaseDatabase.getInstance();
             mUsers =  mDataRef.getReference("users");
         }else {
-           // mAuth = FirebaseAuth.getInstance();
             mDataRef = FirebaseDatabase.getInstance();
             mUsers =  mDataRef.getReference("users");
         }
     }
+    //==========END CONSTRUCTOR==========//
 
     @Override
     public void onCreate() {
         super.onCreate();
 
     }
-
+    //==========SEND FRIEND REQUEST==========//
     public void sendRequest(final String senderID, final String receiverID) {
 
         //==========Get Sender Info==========//
@@ -175,10 +168,45 @@ public class FriendRequestHelper extends Application {
             });
 
     }
+    //==========END SEND FRIEND REQUEST==========//
 
-    public void acceptRequest(String senderID, String receiverID) {
+    //==========ACCEPT FRIEND REQUEST==========//
+    public void acceptRequest(final String curUserID, final String friendID) {
+
+        //==========UPDATE CURRENT USER REQUEST==========//
+        mUsers.child(curUserID).child("requests").child(friendID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("request_code")) {
+                    mUsers.child(curUserID).child("requests").child(friendID).child("request_code").setValue(Request_Code.ACCEPTED);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //==========END UPDATE REQUEST==========//
+
+        //==========UPDATE FRIEND REQUEST==========//
+        mUsers.child(friendID).child("requests").child(curUserID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("request_code")) {
+                    mUsers.child(friendID).child("requests").child(curUserID).child("request_code").setValue(Request_Code.ACCEPTED);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //==========END UPDATE FRIEND REQUEST==========//
 
     }
+    //==========END ACCEPT FRIEND REQUEST==========//
 
     private String setRequestDate() {
 

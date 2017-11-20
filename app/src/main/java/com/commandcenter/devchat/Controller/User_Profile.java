@@ -46,16 +46,9 @@ public class User_Profile extends AppCompatActivity {
 
         final String userID = getIntent().getStringExtra("user_id");
 
-        tv_displayName = (TextView) findViewById(R.id.user_profile_tv_displayName);
-        tv_Rank        = (TextView) findViewById(R.id.user_profile_tv_Rank);
-        tv_Status      = (TextView) findViewById(R.id.user_profile_tv_Status);
-        iv_profileImg  = (de.hdodenhof.circleimageview.CircleImageView) findViewById(R.id.user_profile_iv_profileImg);
-        btn_send_request = (Button) findViewById(R.id.user_profile_btnSendRequest);
-        btn_remove_friend = (Button) findViewById(R.id.user_profile_btn_removeFriend);
-
         init();
 
-        //==========Hide Buttons if Viewing Your Profile
+        //==========Hide Buttons if Viewing Your Profile==========//
         if (userID.equalsIgnoreCase(mUser.getUid())) {
             btn_send_request.setVisibility(View.GONE);
             btn_remove_friend.setVisibility(View.GONE);
@@ -119,7 +112,6 @@ public class User_Profile extends AppCompatActivity {
             }
         });
 
-
         //==========Send Friend Request Button Click==========//
         btn_send_request.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +166,13 @@ public class User_Profile extends AppCompatActivity {
             mFriendsData = mDatabase.getReference().child("users").child(mUser.getUid()).child("friends");
             mFriendRequestData = mDatabase.getReference().child("users").child(mUser.getUid()).child("requests");
         }
+        tv_displayName = (TextView) findViewById(R.id.user_profile_tv_displayName);
+        tv_Rank        = (TextView) findViewById(R.id.user_profile_tv_Rank);
+        tv_Status      = (TextView) findViewById(R.id.user_profile_tv_Status);
+        iv_profileImg  = (de.hdodenhof.circleimageview.CircleImageView) findViewById(R.id.user_profile_iv_profileImg);
+        btn_send_request = (Button) findViewById(R.id.user_profile_btnSendRequest);
+        btn_remove_friend = (Button) findViewById(R.id.user_profile_btn_removeFriend);
+
     }
 
     @Override
