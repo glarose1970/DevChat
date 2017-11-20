@@ -3,8 +3,8 @@
     package="com.commandcenter.devchat">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -40,8 +40,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Controller.UsersList" />
         <activity android:name=".Controller.User_Profile" />
-        <activity android:name=".Controller.Main_Settings_Profile" />
-        <activity android:name=".Controller.Activity_PrivateMessageBox"></activity>
-    </application>
+        <activity android:name=".Controller.Main_Settings_Profile"></activity>
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"></activity>
+        <receiver android:name=".Helper.PhoneStateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
 
+    </application>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 </manifest>
